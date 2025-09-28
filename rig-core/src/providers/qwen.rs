@@ -25,7 +25,7 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 use tracing::{Instrument, info_span};
 
-const QWEN_API_BASE_URL: &str = "https://dashscope.aliyuncs.com/compatible-mode/v1";
+const QWEN_API_BASE_URL: &str = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1";
 
 pub struct ClientBuilder<'a> {
     api_key: &'a str,
@@ -109,13 +109,19 @@ impl Client {
             .expect("Qwen client should build")
     }
 
+    fn build_url(&self, path: &str) -> String {
+        let base = self.base_url.trim_end_matches('/');
+        let path = path.trim_start_matches('/');
+        format!("{base}/{path}")
+    }
+
     pub(crate) fn post(&self, path: &str) -> reqwest::RequestBuilder {
-        let url = format!("{}/{}", self.base_url, path).replace("//", "/");
+        let url = self.build_url(path);
         self.http_client.post(url).bearer_auth(&self.api_key)
     }
 
     pub(crate) fn get(&self, path: &str) -> reqwest::RequestBuilder {
-        let url = format!("{}/{}", self.base_url, path).replace("//", "/");
+        let url = self.build_url(path);
         self.http_client.get(url).bearer_auth(&self.api_key)
     }
 }
