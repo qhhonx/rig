@@ -61,6 +61,7 @@ pub mod ollama;
 pub mod openai;
 pub mod openrouter;
 pub mod perplexity;
+pub mod qwen;
 pub mod together;
 pub mod voyageai;
 pub mod xai;
